@@ -10,8 +10,10 @@ import UIKit
 class ViewController: UIViewController {
 
     var counter = 60
+    var timer = Timer()
+    let eggTimes = ["Soft":3, "Medium": 4, "Hard": 7]
     
-    let eggTimes = ["Soft":300, "Medium": 420, "Hard": 720]
+    @IBOutlet weak var startText: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,21 +23,26 @@ class ViewController: UIViewController {
     
     @IBAction func harnessSelected(_ sender: UIButton) {
         
+        //everytime button is pressed, we stop the previous timers and start it afresh
+        timer.invalidate()
         let hardness = sender.currentTitle
-        print(eggTimes[hardness!]!)
+        
         counter = eggTimes[hardness!]!
         
-        //below code basically calls updateCounter function every single second based on timeInterval value
-        Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateCounter), userInfo: nil, repeats: true)
+        timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateCounter), userInfo: nil, repeats: true)
+        print("\(counter)")
         
-        // when we click on multiple buttons or eggs on ui, the timer speed increases as there is only single timer running and everytime our time is getting reduced from same timer count. So 1 time pressed -> 1 second trigger, 2 times pressed -> in a second 2 times triggered etc.,
     }
     
-    //selector come from objective-c. So in order for that to work, we add @objc notation
+    // this function is being called continuously by timer
     @objc func updateCounter() {
         if counter > 0 {
             print("\(counter) seconds")
             counter -= 1
+        }
+        else {
+            timer.invalidate()
+            startText.text = "Done!!!"
         }
     }
     
