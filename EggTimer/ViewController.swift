@@ -9,35 +9,34 @@ import UIKit
 
 class ViewController: UIViewController {
 
-    let softTime = 5
-    let mediumTime = 7
-    let hardTime = 12
+    var counter = 60
     
-    let eggTimes = ["Soft": 5, "Medium": 7, "Hard": 12]
+    let eggTimes = ["Soft":300, "Medium": 420, "Hard": 720]
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        
     }
 
     
     @IBAction func harnessSelected(_ sender: UIButton) {
         
-        // hardness is of type String?, as it could be possible for button to not have title
         let hardness = sender.currentTitle
-//        switch hardness{
-//        case "Soft":
-//            print(softTime)
-//        case "Medium":
-//            print(mediumTime)
-//        case "Hard":
-//            print(hardTime)
-//        default:
-//            print("Error")
-//        }
-        
-        // as hardness is of optional type, initially force unwrapping it and then the overall value wrt wrt eggTimes might be coming up. Lets say hardness returns soft instead of Soft.. in order to handle such scenrios its by default returning optional values. So, we add ! (force unwrapping) wrt return value of array
         print(eggTimes[hardness!]!)
+        counter = eggTimes[hardness!]!
+        
+        //below code basically calls updateCounter function every single second based on timeInterval value
+        Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateCounter), userInfo: nil, repeats: true)
+        
+        // when we click on multiple buttons or eggs on ui, the timer speed increases as there is only single timer running and everytime our time is getting reduced from same timer count. So 1 time pressed -> 1 second trigger, 2 times pressed -> in a second 2 times triggered etc.,
+    }
+    
+    //selector come from objective-c. So in order for that to work, we add @objc notation
+    @objc func updateCounter() {
+        if counter > 0 {
+            print("\(counter) seconds")
+            counter -= 1
+        }
     }
     
 }
